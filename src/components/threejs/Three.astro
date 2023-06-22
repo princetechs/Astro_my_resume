@@ -1,0 +1,45 @@
+---
+import type * as THREE from 'three'
+import { createRoot } from 'react-dom'
+import React, { useRef, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+
+type BoxProps = JSX.IntrinsicElements['mesh']
+
+function Box(props: BoxProps) {
+  const mesh = useRef<THREE.Mesh>(null!)
+  const [hovered, setHover] = useState(false)
+  const [active, setActive] = useState(false)
+
+  useFrame((state, delta) => {
+    if (mesh.current) {
+      mesh.current.rotation.x += delta
+    }
+  })
+  return (
+  <mesh
+    position={props.position}
+    rotation={props.rotation}
+    scale={active ? 1.5 : 1}
+    onClick={() => setActive(!active)}
+    onPointerOver={() => setHover(true)}
+    onPointerOut={() => setHover(false)}
+  >
+    <boxGeometry args={[1, 1, 1]} />
+    <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+  </mesh>
+);
+
+
+}
+
+createRoot(document.getElementById('root')).render(
+  <Canvas>
+    <ambientLight />
+    <pointLight position={[10, 10, 10]} />
+    <Box position={[-1.2, 0, 0]} />
+    <Box position={[1.2, 0, 0]} />
+  </Canvas>
+)
+
+---
